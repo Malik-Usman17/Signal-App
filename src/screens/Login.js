@@ -3,6 +3,7 @@ import { Button, Image, Input } from "@rneui/themed";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
+import AwesomeButton from 'react-native-really-awesome-button';
 import Feather from 'react-native-vector-icons/Feather';
 import { auth } from "../../firebase";
 import { AppImages } from "../constants/Images";
@@ -79,6 +80,10 @@ const Login = ({ navigation }) => {
         type="outline"
         onPress={() => navigation.navigate('SignUp')}
       />
+
+      <AwesomeButton backgroundColor='blue' backgroundShadow='blue'>
+        HELLO
+      </AwesomeButton>
 
       <View style={{ height: 50 }} />
 
