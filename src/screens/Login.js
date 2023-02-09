@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Text, View, StatusBar, StyleSheet } from "react-native";
 import { auth } from "../../firebase";
 import { AppImages } from "../constants/Images";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { FacebookAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 import { CommonActions } from '@react-navigation/native';
+import Feather from 'react-native-vector-icons/Feather';
 
 
 const Login = ({ navigation }) => {
@@ -12,7 +13,7 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loader, setLoader] = useState(false)
-
+  const [isSecureText, setIsSecureText] = useState(true);
 
   const onLoginPress = () => {
     setLoader(true)
@@ -53,6 +54,7 @@ const Login = ({ navigation }) => {
         <Input
           placeholder="Email"
           autoFocus
+          keyboardType="email-address"
           textContentType="emailAddress"
           value={email}
           onChangeText={setEmail}
@@ -60,9 +62,16 @@ const Login = ({ navigation }) => {
 
         <Input
           placeholder="Password"
-          secureTextEntry
+          secureTextEntry={isSecureText}
           value={password}
           onChangeText={setPassword}
+          rightIcon={
+            <Feather
+              name={isSecureText ? "eye-off" : "eye"}
+              size={20}
+              onPress={() => setIsSecureText(!isSecureText)}
+            />
+          }
         />
 
       </View>

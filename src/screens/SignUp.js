@@ -9,11 +9,13 @@ import { AppImages } from "../constants/Images";
 const SignUp = ({ navigation }) => {
 
   const profileImage = 'https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png'
+  // const profileImage = 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg'
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [image, setImage] = useState('https://www.aljazeera.com/wp-content/uploads/2022/12/SOR03134.jpg');
+  const [image, setImage] = useState('https://upload.wikimedia.org/wikipedia/commons/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg')
+  // const [image, setImage] = useState('https://www.aljazeera.com/wp-content/uploads/2022/12/SOR03134.jpg');
   const [loader, setLoader] = useState(false);
 
   const register = () => {

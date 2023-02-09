@@ -67,6 +67,7 @@ const AddChat = () => {
 
       <Button
         loading={loader}
+        disabled={!chatText}
         title={"Create new chat"}
         onPress={createChat}
       />

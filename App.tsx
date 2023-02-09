@@ -7,6 +7,7 @@ import SignUp from './src/screens/SignUp';
 import Home from './src/screens/Home';
 import AddChat from './src/screens/AddChat';
 import Chat from './src/screens/Chat';
+import Splash from './src/screens/Splash';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ const App = () => {
   return(
     <NavigationContainer>
       <Stack.Navigator screenOptions={globalScreenOptions}>
+      <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}}/>
         <Stack.Screen name="Login" component={Login}/>
         <Stack.Screen name="SignUp" component={SignUp}/>
         <Stack.Screen name="Home" component={Home}/>
