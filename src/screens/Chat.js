@@ -7,43 +7,44 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { addDoc, collection, doc, Firestore, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, Timestamp } from "firebase/firestore";
 import { auth, db } from "../../firebase";
+import { AppImages } from "../constants/Images";
 
 
 const Chat = ({ route, navigation }) => {
 
-  // const navigation = useNavigation();
-
   const [msg, setMsg] = useState('');
   const [messageData, setMessageData] = useState([])
 
-  // console.log("MESSAGES:", messageData?.slice(-1)[0]?.photoURL)
 
-  // console.log(messageData)
-
-  // // console.log(val messageData[0]?.timeStamp.valueOf)
-  // console.log("DATE:", new Date(messageData[0]?.timeStamp.seconds * 1000))
-  // console.log("MONTH:", new Date(messageData[0]?.timeStamp.seconds * 1000).getMonth())
-  // console.log("DAY:", new Date(messageData[0]?.timeStamp.seconds * 1000).getDate())
-  // console.log("YEAR:", new Date(messageData[0]?.timeStamp.seconds * 1000).getFullYear())
-  // console.log("Hour:", new Date(messageData[0]?.timeStamp.seconds * 1000).getHours())
-  // console.log("Minutes:", new Date(messageData[0]?.timeStamp.seconds * 1000).getMinutes())
-  // console.log("Seconds:", new Date(messageData[0]?.timeStamp.seconds * 1000).getSeconds())
+  const ProfileImageComponent = ({ image, right, left }) => {
+    return (
+      <Avatar
+        size={28}
+        position="absolute"
+        rounded
+        source={{ uri: image }}
+        bottom={-15}
+        right={right}
+        left={left}
+      />
+    )
+  }
 
   const dateTimeFormat = (value) => {
     var month = new Date(value.seconds * 1000).getMonth() + 1
     month = month < 10 ? `0${month}` : month
     var day = new Date(value.seconds * 1000).getDate()
     day = day < 10 ? `0${day}` : day
-    const year = new Date(value.seconds * 1000).getFullYear()
+    const year = new Date(value.seconds * 1000).getFullYear().toString().substring(2)
     const hour = new Date(value.seconds * 1000).getHours()
-    const minute = new Date(value.seconds * 1000).getMinutes()
-    const seconds = new Date(value.seconds * 1000).getSeconds()
+    var minute = new Date(value.seconds * 1000).getMinutes()
+    minute = minute < 10 ? `0${minute}` : minute
+    var seconds = new Date(value.seconds * 1000).getSeconds()
+    seconds = seconds < 10 ? `0${seconds}` : seconds
 
     const dateTime = `${day}:${month}:${year}  ${hour}:${minute}:${seconds}`
     return dateTime
   }
-
-  const profileImage = 'https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png'
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -55,8 +56,7 @@ const Chat = ({ route, navigation }) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Avatar
             rounded
-            source={{ uri: messageData?.slice(-1)[0]?.photoURL }}
-          //source={{ uri: messageData[-1]?.photoURL }}
+            source={{ uri: messageData?.slice(-1)[0]?.photoURL || AppImages.emptyProfileImage }}
           />
           <Text style={styles.headerTitle}>
             {route.params.chatName}
@@ -165,29 +165,12 @@ const Chat = ({ route, navigation }) => {
 
   useLayoutEffect(() => {
     getMessagesData()
-  }, [route, messageData])
+  }, [messageData])
 
   // useLayoutEffect(() => {
-
-  //   const getMessagesData = async () => {
-  //     const getMessagesRef = doc(db, "chats", route.params.id)
-  //     try {
-  //       const getMessages = await getDocs(collection(getMessagesRef, "messages"))
-  //       let newArr = []
-  //       getMessages.forEach((doc) => {
-  //         newArr.push({ ...doc.data(), id: doc.id })
-  //       });
-  //       setMessageData(newArr)
-  //     } catch (error) {
-  //       Alert(error)
-  //     }
-  //   }
-
   //   getMessagesData()
+  // }, [route, messageData])
 
-  // }, [route])
-
-  // console.log("MESSAGES:", messageData)
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -195,22 +178,20 @@ const Chat = ({ route, navigation }) => {
       <StatusBar barStyle={"light-content"} />
 
       <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        // behavior={Platform.OS == "ios" ? "padding" : "height"}
         style={styles.container}
-        keyboardVerticalOffset={90}
+      // keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 90}
+      //keyboardVerticalOffset={90}
       >
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss}>
           <>
-            <ScrollView contentContainerStyle={{ paddingTop: 10 }}>
+            <ScrollView contentContainerStyle={{ padding: 12 }}>
               {
                 messageData.map((data, id) =>
                   data.email === auth?.currentUser?.email ? (
                     <View key={id} style={styles.receiver}>
-                      <Avatar
-                        position="absolute"
-                        rounded
-                        source={{ uri: data.photoURL }}
-                        bottom={-15}
+                      <ProfileImageComponent
+                        image={data.photoURL}
                         right={-5}
                       />
                       <Text style={styles.receiverText}>{data.message}</Text>
@@ -223,11 +204,8 @@ const Chat = ({ route, navigation }) => {
                     :
                     (
                       <View key={id} style={styles.sender}>
-                        <Avatar
-                          position="absolute"
-                          rounded
-                          source={{ uri: data.photoURL }}
-                          bottom={-15}
+                        <ProfileImageComponent
+                          image={data.photoURL}
                           left={-5}
                         />
                         <Text style={styles.senderText}>{data.message}</Text>
@@ -241,19 +219,25 @@ const Chat = ({ route, navigation }) => {
                 )
               }
             </ScrollView>
+
             <View style={styles.footer}>
+
               <TextInput
-                placeholder="Signal Message"
+                placeholder="Start a chat"
                 style={styles.textInput}
                 value={msg}
                 onChangeText={setMsg}
                 onSubmitEditing={sendMessage}
               />
+
               <TouchableOpacity onPress={sendMessage}>
                 <Ionicons name="send" size={24} color="#2B68E6" />
               </TouchableOpacity>
+
             </View>
+
           </>
+
         </TouchableWithoutFeedback>
 
       </KeyboardAvoidingView>
@@ -265,8 +249,7 @@ const Chat = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "green"
+    flex: 1
   },
   headerTitle: {
     color: "white",
@@ -280,16 +263,14 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: "row",
-    backgroundColor: "pink",
-    // alignSelf: "flex-end",
     marginTop: "auto",
     alignItems: "center",
-    width: "100%",
-    padding: 15
+    padding: 12
   },
   textInput: {
-    bottom: 0,
+    // bottom: 0,
     height: 40,
+    paddingHorizontal: 10,
     flex: 1,
     marginRight: 15,
     backgroundColor: "#ECECEC",
@@ -301,7 +282,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ECECEC",
     alignSelf: "flex-end",
     borderRadius: 20,
-    marginRight: 15,
+    // marginRight: 15,
     marginBottom: 20,
     maxWidth: "80%",
   },
@@ -309,25 +290,25 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: "#2B68E6",
     borderRadius: 20,
-    margin: 15,
+    marginVertical: 15,
     maxWidth: "80%",
   },
   senderText: {
     color: "white",
     fontWeight: "500",
-    marginLeft: 10,
-    marginBottom: 15
+    // marginLeft: 10,
+    marginBottom: 3
   },
   senderName: {
-    left: 10,
-    paddingRight: 10,
+    // left: 10,
+    // paddingRight: 10,
     fontSize: 10,
     color: "white"
   },
   receiverText: {
     color: "black",
     fontWeight: "500",
-    marginLeft: 10
+    // marginLeft: 10
   },
   time: {
     fontSize: 11,
