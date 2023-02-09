@@ -1,7 +1,7 @@
-import { Image, Input, Button, Text } from "@rneui/themed";
+import { Input, Button, Text } from "@rneui/themed";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React, { useLayoutEffect, useState } from "react";
-import { View, StatusBar, StyleSheet, KeyboardAvoidingView } from "react-native";
+import { View, StatusBar, StyleSheet, KeyboardAvoidingView, Image } from "react-native";
 import { auth } from "../../firebase";
 import { AppImages } from "../constants/Images";
 
@@ -21,7 +21,6 @@ const SignUp = ({ navigation }) => {
   const register = () => {
     setLoader(true)
     createUserWithEmailAndPassword(auth, email, password)
-      // auth.createUserWithEmailAndPassword(email, password)
       .then((user) => {
         console.log("USER:", user)
         updateProfile(auth.currentUser, {
@@ -45,40 +44,21 @@ const SignUp = ({ navigation }) => {
   }
 
 
-  // const register = () => {
-  //   setLoader(true)
-  //   createUserWithEmailAndPassword(auth, email, password)
-  //     // auth.createUserWithEmailAndPassword(email, password)
-  //     .then((user) => {
-  //       console.log("USER:", user)
-  //       // user.user.updateProfile({
-  //       //   // user.user.update({
-  //       //   displayName: name,
-  //       //   photoURL: image || profileImage
-  //       // })
-  //       setLoader(false)
-  //       navigation.navigate('Login')
-  //     })
-  //     .catch((err) => {
-  //       console.log("ERROR:", err)
-  //       setLoader(false)
-  //       alert(err.message)
-  //     })
-  // }
-
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitle: "Back to Login"
     })
   }, [navigation])
 
+
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.container}>
 
-      <StatusBar style="light" />
+      <StatusBar style="light" backgroundColor={"white"} barStyle={"dark-content"} />
 
-      <Text h3 style={{ marginBottom: 30 }}>
+      <Image source={AppImages.logo} style={{ width: 100, height: 100 }} />
+
+      <Text h3 style={{ marginVertical: 30 }}>
         Create a Signal account
       </Text>
 
@@ -86,7 +66,6 @@ const SignUp = ({ navigation }) => {
 
         <Input
           placeholder="Full Name"
-          autoFocus
           value={name}
           onChangeText={setName}
         />
@@ -119,9 +98,7 @@ const SignUp = ({ navigation }) => {
         buttonStyle={{ backgroundColor: loader == true ? 'rgba(244, 244, 244, 0.7)' : "#2C6BED" }}
         loading={loader}
         loadingProps={{
-          size: 'small',
-
-          // color: 'rgba(244, 244, 244, 0.7)'
+          size: 'small'
         }}
         raised
         title={"Register"}
@@ -138,15 +115,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flex: 1,
     backgroundColor: "white",
-    padding: 10
+    padding: 10,
+    paddingHorizontal: 20
   },
   button: {
     width: 200,
     marginTop: 10
   },
   inputContainer: {
-    marginTop: 20,
-    width: 300
+    width: "100%"
   }
 })
 

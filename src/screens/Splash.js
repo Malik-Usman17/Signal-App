@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, StatusBar } from 'react-native';
 import { AppImages } from '../constants/Images';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { auth } from '../../firebase';
@@ -28,7 +28,11 @@ const Splash = () => {
 
   return (
     <View style={styles.container}>
+
+      <StatusBar style="light" backgroundColor={"white"} barStyle={"dark-content"} />
+
       <Image source={AppImages.logo} style={styles.image} />
+
     </View>
   )
 }
@@ -36,7 +40,7 @@ const Splash = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "White",
+    backgroundColor: "white",
     justifyContent: 'center',
     alignItems: "center"
   },
